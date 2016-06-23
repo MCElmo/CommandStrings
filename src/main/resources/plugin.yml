@@ -1,0 +1,12 @@
+name: CommandStrings
+main: me.MC_Elmo.CommandStrings
+version: 1.0
+author: MC_Elmo
+database: false
+description: Run Multiple Commands with Custom Delay.
+
+commands:
+  commandstring:
+    description: Base Command for Command String Plugin.
+    aliases: [cs]
+    usage: /<command> help

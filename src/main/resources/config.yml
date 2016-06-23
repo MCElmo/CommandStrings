@@ -1,0 +1,31 @@
+Command Strings:
+   #Name of Command String
+   preset1:
+      delay: #leave blank
+         global_delay: false #if you want all the commands to have the same delay.
+         #will be ignored if global_Delay is false
+         global_delayString: "10s" #the global delay
+         firstExecuteDelay: false #Set to false if you don't want the first command to have a delay.
+      commands:
+         #commands must start with a '/'
+         # delays must start with 'delay' and can use day:d  hours:h   minutes:m  seconds:s    Ex:1d2h56m26s
+         - 'delay 17s'
+         - '/effect {PLAYERNAME} speed 30 5'
+         - 'delay 5s'
+         - '/effect {PLAYERNAME} 16 30 5'
+   preset2:
+      delay: #leave blank
+         global_delay: true
+         global_delayString: "10s"
+         firstExecuteDelay: true
+      commands:
+         - "/effect {PLAYERNAME} speed 30 5"
+         - "/effect {PLAYERNAME} 16 30 5"
+   preset3:
+      delay: #leave blank
+         global_delay: true
+         global_delayString: "1m3s"
+         firstExecuteDelay: false
+      commands:
+         - "/say this is a preset"
+         - "/say this is also a preset"
