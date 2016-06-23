@@ -28,7 +28,7 @@ public class CommandStringExecutor implements CommandExecutor
     {
         this.plugin = plugin;
         this.util = util;
-        this.prefix = plugin.getPrefix();
+        this.prefix = ChatColor.translateAlternateColorCodes('&',plugin.getPrefix());
         config = this.plugin.getConfig();
         title = ChatColor.STRIKETHROUGH + "-----" + ChatColor.RESET + prefix + ChatColor.RESET + ChatColor.STRIKETHROUGH + "-----";
     }
@@ -120,7 +120,7 @@ public class CommandStringExecutor implements CommandExecutor
                             return false;
                         }
                     }
-                    Long delay = 0L;
+                    Long delay = 1L;
                     List<String> commandStrings = config.getStringList("Command Strings." + args[1] + ".commands");
                     ArrayList<String> first = new ArrayList<String>();
                     if(config.getBoolean("Command Strings." + args[1] + ".delay.global_delay", false))
@@ -143,7 +143,7 @@ public class CommandStringExecutor implements CommandExecutor
                                         continue;
                                     } else
                                     {
-                                        commands.put(command, delay * 20L);
+                                        commands.put(command, delay / 50L);
                                         count++;
                                         continue;
                                     }
@@ -168,8 +168,8 @@ public class CommandStringExecutor implements CommandExecutor
                             if (line.startsWith("/"))
                             {
                                 String command = line.substring(1);
-                                commands.put(command, delay * 20L);
-                                delay = 0L;
+                                commands.put(command, delay / 50L);
+                                delay = 1L;
                             } else if (line.startsWith("delay"))
                             {
 
@@ -187,12 +187,27 @@ public class CommandStringExecutor implements CommandExecutor
                     }
                     Iterator<Map.Entry<String,Long>> it = commands.entrySet().iterator();
                     Long currentDelay = 0L;
+                    sender.sendMessage(prefix + ChatColor.GREEN + "Command String : " + ChatColor.DARK_GREEN +  args[1] + " successfully started!");
                     while(it.hasNext())
                     {
-                        final Map.Entry<String,Long> commandEntry = it.next();
+                        final Map.Entry<String, Long> commandEntry = it.next();
                         if(first.size() > 0)
                         {
                             if (first.get(0).equals(commandEntry.getKey()))
+                            {
+                                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), commandEntry.getKey());
+                                currentDelay += commandEntry.getValue();
+                                first.clear();
+                            }
+
+                        }
+                        else
+                        {
+                            currentDelay += commandEntry.getValue();
+                            if(currentDelay == 0L)
+                            {
+                                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), commandEntry.getKey());
+                            }else
                             {
                                 new BukkitRunnable()
                                 {
@@ -200,24 +215,11 @@ public class CommandStringExecutor implements CommandExecutor
                                     {
                                         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), commandEntry.getKey());
                                     }
-                                }.runTaskLater(this.plugin, commandEntry.getValue());
-                                currentDelay += commandEntry.getValue();
+                                }.runTaskLater(this.plugin, currentDelay);
                             }
-                        }
-                        else
-                        {
-                            currentDelay += commandEntry.getValue();
-                            new BukkitRunnable()
-                            {
-                                public void run()
-                                {
-                                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), commandEntry.getKey());
-                                }
-                            }.runTaskLater(this.plugin,currentDelay);
                         }
                         it.remove();
                     }
-                    sender.sendMessage(prefix + ChatColor.GREEN + "Command String : " + ChatColor.DARK_GREEN +  args[1] + " successfully started!");
                     return true;
 
                 }
@@ -302,7 +304,7 @@ public class CommandStringExecutor implements CommandExecutor
                         return false;
                     }
 
-                        Long delay = 0L;
+                        Long delay = 1L;
                         List<String> commandStrings = config.getStringList("Command Strings." + args[2] + ".commands");
                         ArrayList<String> first = new ArrayList<String>();
                         if(config.getBoolean("Command Strings." + args[2] + ".delay.global_delay",false))
@@ -327,7 +329,7 @@ public class CommandStringExecutor implements CommandExecutor
                                             continue;
                                         } else
                                         {
-                                            commands.put(command, delay * 20L);
+                                            commands.put(command, delay / 50L);
                                             count++;
                                             continue;
                                         }
@@ -354,8 +356,8 @@ public class CommandStringExecutor implements CommandExecutor
                                 if (line.startsWith("/"))
                                 {
                                     String command = line.substring(1);
-                                      commands.put(command, delay * 20L);
-                                    delay = 0L;
+                                    commands.put(command, delay / 50L);
+                                    delay = 1L;
                                 } else if (line.startsWith("delay"))
                                 {
 
@@ -371,9 +373,9 @@ public class CommandStringExecutor implements CommandExecutor
                             }
 
                         }
-                    Iterator<Map.Entry<String,Long>> it = commands.entrySet().iterator();
-                util.log(String.valueOf(commands.entrySet()));
-                    Long currentDelay = 0L;
+                Iterator<Map.Entry<String,Long>> it = commands.entrySet().iterator();
+                Long currentDelay = 0L;
+                sender.sendMessage(prefix + ChatColor.GREEN + "Command String : " + ChatColor.DARK_GREEN +  args[2] + " successfully started!");
                 while(it.hasNext())
                 {
                     final Map.Entry<String, Long> commandEntry = it.next();
@@ -381,31 +383,18 @@ public class CommandStringExecutor implements CommandExecutor
                     {
                         if (first.get(0).equals(commandEntry.getKey()))
                         {
-                            new BukkitRunnable()
-                            {
-                                public void run()
-                                {
-                                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), commandEntry.getKey());
-                                }
-                            }.runTaskLater(this.plugin, commandEntry.getValue());
+                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), commandEntry.getKey());
                             currentDelay += commandEntry.getValue();
+                            first.clear();
                         }
+
                     }
                     else
                     {
                         currentDelay += commandEntry.getValue();
-                        util.log(commandEntry.getKey() + " : " + currentDelay);
                         if(currentDelay == 0L)
                         {
-                            util.log(commandEntry.getKey() + " ran");
-                            new BukkitRunnable()
-                            {
-                                public void run()
-                                {
-                                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), commandEntry.getKey());
-                                    plugin.getLogger().info("Dispatched : " + commandEntry.getKey());
-                                }
-                            }.runTask(this.plugin);
+                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), commandEntry.getKey());
                         }else
                         {
                             new BukkitRunnable()
@@ -419,7 +408,7 @@ public class CommandStringExecutor implements CommandExecutor
                     }
                     it.remove();
                 }
-                    sender.sendMessage(prefix + ChatColor.GREEN + "Command String : " + ChatColor.DARK_GREEN +  args[2] + " successfully started!");
+
                 return true;
              }
             default:

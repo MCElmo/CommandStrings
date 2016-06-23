@@ -8,11 +8,12 @@ import org.bukkit.ChatColor;
  */
 public class MainUtils
 {
-    private static final long DAY = 86400L;
-    private static final long HOUR = 3600L;
-    private static final long MINUTE = 60L;
-    private static final long SECOND = 1L;
-    private static final char DAY_CHAR = 'd', HOUR_CHAR = 'h', MINUTE_CHAR = 'm', SECOND_CHAR = 's';
+    private static final long DAY = 86400000L;
+    private static final long HOUR = 3600000L;
+    private static final long MINUTE = 60000L;
+    private static final long SECOND = 1000L;
+    private static final long TICK = 50L;
+    private static final char DAY_CHAR = 'd', HOUR_CHAR = 'h', MINUTE_CHAR = 'm', SECOND_CHAR = 's', TICK_CHAR = 't';
     private CommandStrings plugin;
     public MainUtils(CommandStrings plugin)
     {
@@ -65,6 +66,8 @@ public class MainUtils
                     case SECOND_CHAR:
                         multi = SECOND;
                         break;
+                    case TICK_CHAR:
+                        multi = TICK;
                     case ' ':
                     case '_':
                         continue;
@@ -97,19 +100,12 @@ public class MainUtils
         return -1;
     }
 
-    public static String removeElt(char [] arr, int remIndex )
-    {
-        for ( int i = remIndex ; i < arr.length - 1 ; i++ )
-        {
-            arr[ i ] = arr[ i + 1 ] ;
-        }
-        return String.valueOf(arr);
-    }
+
 
 
     public void log(String message)
     {
-        plugin.getLogger().info(plugin.getPrefix() + message);
+        plugin.getLogger().info(colorize(plugin.getPrefix()) + message);
     }
     public void logSevere(String message){plugin.getLogger().severe(plugin.getPrefix() + message);}
 

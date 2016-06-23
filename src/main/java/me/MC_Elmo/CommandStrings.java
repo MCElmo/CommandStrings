@@ -14,7 +14,7 @@ public class CommandStrings extends JavaPlugin
 {
     private CommandStrings plugin;
     private FileConfiguration config;
-    private String prefix = "§e[§cCommand§aStrings§e]§r";
+    private String prefix = "&e[&cCommand&aStrings&e]&r";
     private Logger logger;
     private CommandExecutor executor = new CommandStringExecutor(this, new MainUtils(this));
     private BukkitScheduler scheduler;
